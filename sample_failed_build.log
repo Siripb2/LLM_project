@@ -1,0 +1,38 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< com.example:microservice >---------------------
+[INFO] Building example-microservice 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ microservice ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ microservice ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 15 source files to /app/target/classes
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /app/src/main/java/com/example/UserService.java:[45,21] cannot find symbol
+  symbol:   method getUserId()
+  location: variable user of type com.example.model.User
+[ERROR] /app/src/main/java/com/example/UserService.java:[62,13] incomparable types: com.example.model.Role and java.lang.String
+[INFO] 2 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  4.521 s
+[INFO] Finished at: 2026-04-05T10:15:30Z
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.8.1:compile (default-compile) on project microservice: Compilation failure:
+[ERROR] /app/src/main/java/com/example/UserService.java:[45,21] cannot find symbol
+[ERROR]   symbol:   method getUserId()
+[ERROR]   location: variable user of type com.example.model.User
+[ERROR] /app/src/main/java/com/example/UserService.java:[62,13] incomparable types: com.example.model.Role and java.lang.String
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.

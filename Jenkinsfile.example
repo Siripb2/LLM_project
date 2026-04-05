@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+
+    environment {
+        // You should store your GEMINI_API_KEY in Jenkins Credentials
+        // and link it to an environment variable like this:
+        // GEMINI_API_KEY = credentials('gemini-api-key')
+        GEMINI_API_KEY = "YOUR_API_KEY_HERE"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source code...'
+                // git 'https://github.com/your-repo/project.git'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                echo 'Building the project...'
+                // Simulating a failing build step that dumps to a log
+                // sh 'mvn clean install > build.log 2>&1 || exit 1'
+            }
+        }
+    }
+
+    post {
+        failure {
+            echo 'Build failed! Triggering LLM DevOps Assistant for analysis...'
+            
+            // In a real scenario, make sure you save your log to a file like 'build.log'
+            
+            // Push the log file to the DevOps LLM Assistant Webhook
+            sh '''
+            curl -X POST \
+              -F "title=Jenkins ${JOB_NAME} Build #${BUILD_NUMBER}" \
+              -F "log_file=@build.log" \
+              -F "llm_model=gemini-2.5-flash" \
+              http://your-devops-assistant-url:5000/api/webhook
+            '''
+            
+            // Optional: Send the URL of the assistant to Slack so developers can click and view the analysis
+            // slackSend channel: '#devops-alerts', message: "Build Failed. [View Analysis](http://your-devops-assistant-url:5000/)"
+        }
+    }
+}

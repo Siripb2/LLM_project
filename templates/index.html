@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Assistant</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Marked.js & Highlight.js -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <!-- Top Progress Loader -->
+    <div id="top-loader" class="top-loader"></div>
+
+    <div class="saas-layout">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <div class="nav-brand">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                    <span>Autopilot / <strong>DevOps AI</strong></span>
+                </div>
+                <div class="nav-badge">
+                    <span class="pulse-dot"></span>
+                    <select id="model-select" class="nav-select" style="background:transparent; border:none; color:inherit; font-family:inherit; font-size:inherit; font-weight:500; outline:none; cursor:pointer;">
+                        <option value="gemini-2.5-flash" style="color: black">Gemini 2.5 Flash</option>
+                        <option value="gemini-3.0-pro" style="color: black">Gemini 3.0 Pro</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nav-right">
+                <button class="nav-btn" title="Settings">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </button>
+            </div>
+        </nav>
+
+        <div class="main-body">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-top">
+                    <h4>History</h4>
+                    <button id="clear-history-btn" class="nav-btn" title="Clear History">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                </div>
+                <ul id="history-list" class="history-list">
+                    <li class="history-empty">No history.</li>
+                </ul>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="content-area">
+                <div class="content-wrapper">
+                    
+                    <header class="page-header">
+                        <h2>Diagnose Build</h2>
+                        <p class="subtitle">Quickly identify and resolve CI/CD pipeline failures.</p>
+                    </header>
+
+                    <section id="input-section" class="card">
+                        <div class="tabs">
+                            <button class="tab-btn active" data-target="upload-tab">File Upload</button>
+                            <button class="tab-btn" data-target="paste-tab">Paste Log</button>
+                        </div>
+
+                        <div class="card-body">
+                            <!-- File Upload Tab -->
+                            <div id="upload-tab" class="tab-content active">
+                                <input type="file" id="file-input" accept=".log,.txt,text/*" class="hidden-input">
+                                <div class="drop-zone" id="drop-zone">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"></path>
+                                    </svg>
+                                    <div class="drop-text">
+                                        <span class="upload-link">Click to upload</span> or drag and drop
+                                        <div class="upload-hint">TXT, LOG files supported</div>
+                                    </div>
+                                    <div class="file-info hidden" id="file-info">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                        <span id="file-name" class="mono"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Paste Text Tab -->
+                            <div id="paste-tab" class="tab-content">
+                                <div class="editor-container">
+                                    <div class="editor-header">
+                                        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+                                        <span class="editor-title">bash</span>
+                                    </div>
+                                    <textarea id="log-text-input" class="mono" placeholder="Paste your stack trace here..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer">
+                            <button id="analyze-btn" class="btn primary-btn" disabled>Analyze Issue</button>
+                        </div>
+                    </section>
+
+                    <!-- Result Section -->
+                    <section id="result-section" class="result-area hidden">
+                        <div class="result-header">
+                            <div class="result-title">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ededed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                                <h3>Root Cause Analysis</h3>
+                            </div>
+                            <div class="result-actions">
+                                <button id="download-btn" class="btn outline-btn">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                    Download
+                                </button>
+                                <button id="copy-btn" class="btn outline-btn">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+                        <div id="markdown-output" class="markdown-body">
+                            <!-- LLM Output streams here -->
+                        </div>
+                    </section>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
