@@ -1,3 +1,4 @@
+
 # LLM-Powered DevOps Assistant for CI/CD Automation
 
 This project integrates Large Language Models (LLMs) with Jenkins pipelines (or any CI/CD platform) to automatically analyze build logs and generate actionable failure summaries and troubleshooting suggestions.
@@ -55,3 +56,6 @@ To deploy the dashboard on any server (AWS, DigitalOcean, internal network), you
    ```
 
 Replace `<your-github-username>` with the GitHub organization or username hosting this repository.
+
+# LLM_project
+
